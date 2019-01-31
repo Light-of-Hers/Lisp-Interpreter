@@ -29,6 +29,7 @@ valp_t aux(const vtoken_t &tks) {
                 cdr(cur) = aux(tks);
                 if (tks[step].type != token_t::RIGHT_BRACKET)
                     normal_err("Syntax Error");
+                
             }
             cdr(cur) = cons(aux(tks), nullptr);
             cur = cdr(cur);
