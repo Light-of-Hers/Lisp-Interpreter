@@ -1,7 +1,9 @@
 # Lisp-Interpreter
 A Simple Lisp Interpreter
 
-Usage:
-`cd src
+**Usage:**
+```
+cd src
 make
-./a`
+./a
+```
