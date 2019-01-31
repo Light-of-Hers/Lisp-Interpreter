@@ -2,6 +2,6 @@
 A Simple Lisp Interpreter
 
 Usage:
-    cd src
-    make
-    ./a
+`cd src
+make
+./a`
