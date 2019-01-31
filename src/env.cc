@@ -13,6 +13,8 @@ valp_t lookup(env_t env, symbol_t var) {
     if (it == mp.end()) {
         return lookup(cdr(env), var);
     } else {
+        if (eq(it->second, st_getval(BASE::UNASS)))
+            normal_err("Unassigned Variable", st_getval(var));
         return it->second;
     }
 }
@@ -36,14 +38,18 @@ void define_var(env_t env, symbol_t var, valp_t val) {
 valp_t extend_env(env_t env, valp_t vars, valp_t vals) {
     frame_t f = cons(make(svmap_t()), env);
     auto &mp = GET(car(f), svmap_t);
-    while (vars && vals) {
+    while (vars && vals && CHECK(vars, PAIR)) {
         mp[GET(car(vars), symbol_t)] = car(vals);
         vars = cdr(vars), vals = cdr(vals);
     }
-    if (vars != nullptr)
-        normal_err("Too Few Arguments", vals);
-    if (vals != nullptr)
-        normal_err("Too Many Arguments", vals);
+    if (vars != nullptr && !CHECK(vars, PAIR))
+        mp[GET(vars, symbol_t)] = vals;
+    else {
+        if (vars != nullptr && vals == nullptr)
+            normal_err("Too Few Arguments", vals);
+        if (vals != nullptr && vars == nullptr)
+            normal_err("Too Many Arguments", vals);
+    }
     return f;
 }
 

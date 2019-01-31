@@ -6,13 +6,18 @@
 
 namespace le {
 
-bool is_assign(valp_t exp) { return tag_list(exp, BASE::SET); }
+bool is_assign(valp_t exp) {
+    return tag_list(exp, BASE::SET);
+}
 
-valp_t assign_part(valp_t exp, ASSIGN part) { return ref(exp, (int)part); }
+valp_t assign_part(valp_t exp, ASSIGN part) {
+    return ref(exp, (int)part);
+}
 
 valp_t eval_assign(valp_t exp, valp_t env) {
-    set_var(env, GET(assign_part(exp, ASSIGN::VAR), symbol_t),
-            eval(assign_part(exp, ASSIGN::VAL), env));
+    auto var = assign_part(exp, ASSIGN::VAR);
+    auto val = assign_part(exp, ASSIGN::VAL);
+    set_var(env, GET(var, symbol_t), eval(val, env));
     return st_getval(BASE::OK);
 }
 

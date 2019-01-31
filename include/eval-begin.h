@@ -8,7 +8,6 @@ namespace le {
 
 bool is_begin(valp_t exp);
 valp_t begin_actions(valp_t exp);
-valp_t make_begin(valp_t exps);
 valp_t eval_seq(valp_t exps, env_t env);
 valp_t seq2exp(valp_t seq);
 

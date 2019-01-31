@@ -13,7 +13,7 @@
 
 namespace le {
 
-static std::istream &read(std::istream &is, std::string &code) {
+std::istream &read(std::istream &is, std::string &code) {
     code.clear();
     int lb = 0, rb = 0;
     char ch;

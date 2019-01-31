@@ -23,7 +23,9 @@ enum class BASE {
     OR,
     OR_TEST,
     WHILE,
-    FOR
+    FOR,
+    LET_,
+    UNASS
 };
 
 void st_init();

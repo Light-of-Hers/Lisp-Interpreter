@@ -8,9 +8,12 @@
 
 namespace le {
 
+#define GUARD (cons(nullptr, nullptr))
+
 valp_t make_list(std::vector<valp_t> lst);
 valp_t ref(valp_t lst, int n);
 valp_t map(valp_t lst, std::function<valp_t(valp_t)> proc);
+valp_t filter(valp_t lst, std::function<bool(valp_t)> pred);
 int length(valp_t lst);
 valp_t append(valp_t lst1, valp_t lst2);
 

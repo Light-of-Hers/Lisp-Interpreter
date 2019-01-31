@@ -12,7 +12,7 @@ bool is_begin(valp_t exp) {
 valp_t begin_actions(valp_t exp) {
     return cdr(exp);
 }
-valp_t make_begin(valp_t exps) {
+static valp_t make_begin(valp_t exps) {
     return cons(st_getval(BASE::BEGIN), exps);
 }
 valp_t eval_seq(valp_t exps, env_t env) {

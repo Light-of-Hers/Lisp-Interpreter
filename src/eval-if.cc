@@ -15,8 +15,7 @@ valp_t if_part(valp_t exp, IF part) {
     return ref(exp, (int)part);
 }
 valp_t make_if(valp_t pred, valp_t then, valp_t alter) {
-    return make_list(
-        {st_getval(BASE::IF), pred, then, alter});
+    return make_list({st_getval(BASE::IF), pred, then, alter});
 }
 valp_t eval_if(valp_t exp, env_t env) {
     if (is_true(eval(if_part(exp, IF::PRED), env))) {
@@ -46,10 +45,9 @@ static valp_t cond2if_aux(valp_t clss) {
     if (eq(pred, st_getval(BASE::ELSE))) {
         if (cdr(clss) != nullptr)
             normal_err("Else's Not the Last", clss);
-        return make_begin(cls_actions(cls));
+        return seq2exp(cls_actions(cls));
     } else {
-        return make_if(pred, make_begin(cls_actions(cls)),
-                       cond2if_aux(cdr(clss)));
+        return make_if(pred, seq2exp(cls_actions(cls)), cond2if_aux(cdr(clss)));
     }
 }
 valp_t cond2if(valp_t exp) {
@@ -65,8 +63,7 @@ static valp_t and2if_aux(valp_t exps) {
     } else if (cdr(exps) == nullptr) {
         return car(exps);
     } else {
-        return make_if(car(exps), and2if_aux(cdr(exps)),
-                       st_getbool(false));
+        return make_if(car(exps), and2if_aux(cdr(exps)), st_getbool(false));
     }
 }
 valp_t and2if(valp_t exp) {
@@ -83,8 +80,7 @@ static valp_t or2if_aux(valp_t exps) {
     } else {
         return make1let(
             or_test, car(exps),
-            make_list({make_if(or_test, or_test,
-                               or2if_aux(cdr(exps)))}));
+            make_list({make_if(or_test, or_test, or2if_aux(cdr(exps)))}));
     }
 }
 valp_t or2if(valp_t exp) {

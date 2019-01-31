@@ -4,10 +4,10 @@ primitive.o running.o scan.o symbol.o util.o value.o error.o
 CXXFLAGS = -Wall -O2 -std=c++1z
 
 a: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o ../$@ $^
 
 clean: 
-	rm -rf a *.o
+	rm -rf *.o
 
 main.o: main.cc
 

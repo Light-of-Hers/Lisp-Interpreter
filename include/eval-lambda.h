@@ -19,10 +19,17 @@ bool is_proc(valp_t exp);
 valp_t proc_part(valp_t exp, PROC part);
 valp_t make_proc(valp_t args, valp_t body, env_t env);
 
+enum class LET { BINDS, BODY, NAME };
+
 bool is_let(valp_t exp);
-valp_t let2lambda(valp_t exp);
+valp_t let2exp(valp_t exp);
 valp_t make_let(valp_t binds, valp_t body);
 valp_t make1let(valp_t var, valp_t val, valp_t body);
+
+bool is_let_(valp_t exp);
+valp_t let_2lets(valp_t exp);
+
+valp_t body_scan(valp_t exp);
 
 }; // namespace le
 

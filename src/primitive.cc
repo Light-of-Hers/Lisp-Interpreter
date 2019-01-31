@@ -1,6 +1,9 @@
 #include "../include/primitive.h"
 #include "../include/env.h"
 #include "../include/error.h"
+#include "../include/parse.h"
+#include "../include/running.h"
+#include "../include/scan.h"
 #include "../include/symbol.h"
 #include "../include/util.h"
 #include <cassert>
@@ -12,6 +15,8 @@
 #include <vector>
 
 namespace le {
+
+#define PP(body) ([](valp_t args) -> valp_t { body })
 
 static void argcnt_err(int expect, int real, valp_t exp) {
     std::ostringstream sout;
@@ -95,17 +100,6 @@ static valp_t set_cdr_(valp_t args) {
 static valp_t list_(valp_t args) {
     return args;
 }
-static valp_t display(valp_t args) {
-    expect(1, args);
-    std::cout << val2str(car(args));
-    return st_getval(BASE::OK);
-}
-static valp_t newline(valp_t args) {
-    expect(0, args);
-    std::cout << std::endl;
-    return st_getval(BASE::OK);
-}
-
 #define EPS 1e-8
 static int dcmp(double a, double b) {
     if (a - b > EPS) {
@@ -168,20 +162,15 @@ std::vector<std::pair<string_t, pp_t>> pp_tab{
     {">=", nb_ge},
     {"eq?", sb_eq},
     {"list", list_},
-    {"display", display},
-    {"newline", newline},
-    {"symbol?", [](valp_t args) { return check_(args, value_t::SYMBOL); }},
-    {"number?", [](valp_t args) { return check_(args, value_t::NUMBER); }},
-    {"boolean?", [](valp_t args) { return check_(args, value_t::BOOLEAN); }},
-    {"string?", [](valp_t args) { return check_(args, value_t::STRING); }},
-    {"pair?", [](valp_t args) { return check_(args, value_t::PAIR); }},
-    {"not",
-     [](valp_t args) -> valp_t {
-         expect(1, args);
-         return st_getbool(!is_true(car(args)));
-     }},
+    {"symbol?", PP(return check_(args, value_t::SYMBOL);)},
+    {"number?", PP(return check_(args, value_t::NUMBER);)},
+    {"boolean?", PP(return check_(args, value_t::BOOLEAN);)},
+    {"string?", PP(return check_(args, value_t::STRING);)},
+    {"pair?", PP(return check_(args, value_t::PAIR);)},
+    {"not", PP(expect(1, args); return st_getbool(!is_true(car(args)));)},
     {"set-car!", set_car_},
-    {"set-cdr!", set_cdr_}};
+    {"set-cdr!", set_cdr_},
+    {"null?", PP(expect(1, args); return st_getbool(car(args) == nullptr);)}};
 
 static valp_t make_pp(int idx) {
     return make_list({st_getval(BASE::PRIM), make((double)idx)});
@@ -202,5 +191,4 @@ void pp_init(env_t env) {
 valp_t apply_pp(valp_t proc, valp_t args) {
     return pp_tab[pp_idx(proc)].second(args);
 }
-
 }; // namespace le

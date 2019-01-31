@@ -6,15 +6,25 @@
 
 namespace le {
 
-static std::vector<string_t> base_str{
-    "define",     "set!",
-    "lambda",     "begin",
-    "if",         "cond",
-    "ok",         "**procedure**",
-    "quote",      "**primitive-procedure**",
-    "else",       "and",
-    "let",        "or",
-    "**or-test**", "while", "for"};
+static std::vector<string_t> base_str{"define",
+                                      "set!",
+                                      "lambda",
+                                      "begin",
+                                      "if",
+                                      "cond",
+                                      "ok",
+                                      "**procedure**",
+                                      "quote",
+                                      "**primitive-procedure**",
+                                      "else",
+                                      "and",
+                                      "let",
+                                      "or",
+                                      "**or-test**",
+                                      "while",
+                                      "for",
+                                      "let*",
+                                      "**unassigned**"};
 static std::map<string_t, symbol_t> str2sb;
 static std::vector<string_t> sb2str;
 static std::vector<valp_t> sb2val;
@@ -56,8 +66,7 @@ const symbol_t st_getsb(const string_t &s) {
 
 const string_t st_getstr(symbol_t sb) {
     if (sb < 0 || sb >= (int)sb2str.size()) {
-        normal_err("Cannnot Find Symbol With id: " +
-                   std::to_string(sb));
+        normal_err("Cannnot Find Symbol With id: " + std::to_string(sb));
     } else {
         return sb2str[sb];
     }
@@ -66,8 +75,7 @@ const string_t st_getstr(symbol_t sb) {
 
 valp_t st_getval(symbol_t sb) {
     if (sb < 0 || sb >= (int)sb2str.size()) {
-        normal_err("Cannnot Find Symbol With id: " +
-                   std::to_string(sb));
+        normal_err("Cannnot Find Symbol With id: " + std::to_string(sb));
     } else {
         return sb2val[sb];
     }

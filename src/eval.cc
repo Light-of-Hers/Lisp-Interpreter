@@ -11,11 +11,13 @@
 #include "../include/symbol.h"
 #include "../include/util.h"
 #include <cassert>
+#include <iostream>
 
 namespace le {
 
 static bool is_self_eval(valp_t exp) {
-    return CHECK(exp, NUMBER) || CHECK(exp, STRING) || CHECK(exp, BOOLEAN);
+    return CHECK(exp, NUMBER) || CHECK(exp, STRING) || CHECK(exp, BOOLEAN) ||
+           eq(exp, st_getval(BASE::UNASS));
 }
 static bool is_var(valp_t exp) {
     return CHECK(exp, SYMBOL);
@@ -45,7 +47,9 @@ valp_t eval(valp_t exp, env_t env) {
     } else if (is_if(exp)) {
         return eval_if(exp, env);
     } else if (is_let(exp)) {
-        return eval(let2lambda(exp), env);
+        return eval(let2exp(exp), env);
+    } else if (is_let_(exp)) {
+        return eval(let_2lets(exp), env);
     } else if (is_cond(exp)) {
         return eval(cond2if(exp), env);
     } else if (is_and(exp)) {
@@ -68,9 +72,10 @@ valp_t apply(valp_t proc, valp_t args) {
     if (is_pp(proc)) {
         return apply_pp(proc, args);
     } else {
-        return eval_seq(proc_part(proc, PROC::BODY),
-                        extend_env(proc_part(proc, PROC::ENV),
-                                   proc_part(proc, PROC::ARGS), args));
+        auto body = proc_part(proc, PROC::BODY);
+        auto vars = proc_part(proc, PROC::ARGS);
+        auto env = proc_part(proc, PROC::ENV);
+        return eval_seq(body, extend_env(env, vars, args));
     }
 }
 

@@ -2,8 +2,6 @@
 
 namespace le {
 
-#define GUARD (cons(nullptr, nullptr))
-
 valp_t make_list(std::vector<valp_t> lst) {
     valp_t head = GUARD;
     valp_t cur = head;
@@ -61,11 +59,26 @@ valp_t append(valp_t lst1, valp_t lst2) {
     if (lst1 == nullptr) {
         return lst2;
     } else {
-        while (cdr(lst1))
-            lst1 = cdr(lst1);
-        cdr(lst1) = lst2;
+        auto tmp = lst1;
+        while (cdr(tmp))
+            tmp = cdr(tmp);
+        cdr(tmp) = lst2;
         return lst1;
     }
+}
+
+valp_t filter(valp_t lst, std::function<bool(valp_t)> pred) {
+    auto head = GUARD;
+    auto cur = head;
+    while (lst) {
+        auto node = car(lst);
+        if (pred(node)) {
+            cdr(cur) = cons(node, nullptr);
+            cur = cdr(cur);
+        }
+        lst = cdr(lst);
+    }
+    return cdr(head);
 }
 
 }; // namespace le

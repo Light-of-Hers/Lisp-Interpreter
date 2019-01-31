@@ -7,9 +7,13 @@
 
 namespace le {
 
-static inline bool is_candy(valp_t exp) { return CHECK(ref(exp, 1), PAIR); }
+static inline bool is_candy(valp_t exp) {
+    return CHECK(ref(exp, 1), PAIR);
+}
 
-bool is_define(valp_t exp) { return tag_list(exp, BASE::DEFINE); }
+bool is_define(valp_t exp) {
+    return tag_list(exp, BASE::DEFINE);
+}
 
 valp_t define_part(valp_t exp, DEFINE part) {
     if (part == DEFINE::VAR) {
@@ -32,8 +36,9 @@ valp_t make_define(valp_t var, valp_t val) {
 }
 
 valp_t eval_define(valp_t exp, valp_t env) {
-    define_var(env, GET(define_part(exp, DEFINE::VAR), symbol_t),
-               eval(define_part(exp, DEFINE::VAL), env));
+    auto var = define_part(exp, DEFINE::VAR);
+    auto val = define_part(exp, DEFINE::VAL);
+    define_var(env, GET(var, symbol_t), eval(val, env));
     return st_getval(BASE::OK);
 }
 
