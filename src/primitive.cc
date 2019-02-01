@@ -1,6 +1,7 @@
 #include "../include/primitive.h"
 #include "../include/env.h"
 #include "../include/error.h"
+#include "../include/eval.h"
 #include "../include/parse.h"
 #include "../include/running.h"
 #include "../include/scan.h"
@@ -16,7 +17,7 @@
 
 namespace le {
 
-#define PP(body) ([](valp_t args) -> valp_t { body })
+#define PP(body) ([](valp_t args) -> valp_t body)
 
 static void argcnt_err(int expect, int real, valp_t exp) {
     std::ostringstream sout;
@@ -25,8 +26,7 @@ static void argcnt_err(int expect, int real, valp_t exp) {
 }
 static void expect(int n, valp_t args) {
     int len = length(args);
-    if (len != n)
-        argcnt_err(n, len, args);
+    if (len != n) argcnt_err(n, len, args);
 }
 
 static valp_t plus(valp_t args) {
@@ -38,8 +38,7 @@ static valp_t plus(valp_t args) {
     return make(res);
 }
 static valp_t minus(valp_t args) {
-    if (args == nullptr)
-        normal_err("At Least 1 Argument");
+    if (args == nullptr) normal_err("At Least 1 Argument");
     number_t res = GET(car(args), number_t);
     args = cdr(args);
     while (args) {
@@ -57,8 +56,7 @@ static valp_t mult(valp_t args) {
     return make(res);
 }
 static valp_t divide(valp_t args) {
-    if (args == nullptr)
-        normal_err("At Least 1 Argument");
+    if (args == nullptr) normal_err("At Least 1 Argument");
     number_t res = GET(car(args), number_t);
     args = cdr(args);
     while (args) {
@@ -162,15 +160,25 @@ std::vector<std::pair<string_t, pp_t>> pp_tab{
     {">=", nb_ge},
     {"eq?", sb_eq},
     {"list", list_},
-    {"symbol?", PP(return check_(args, value_t::SYMBOL);)},
-    {"number?", PP(return check_(args, value_t::NUMBER);)},
-    {"boolean?", PP(return check_(args, value_t::BOOLEAN);)},
-    {"string?", PP(return check_(args, value_t::STRING);)},
-    {"pair?", PP(return check_(args, value_t::PAIR);)},
-    {"not", PP(expect(1, args); return st_getbool(!is_true(car(args)));)},
+    {"symbol?", PP({ return check_(args, value_t::SYMBOL); })},
+    {"number?", PP({ return check_(args, value_t::NUMBER); })},
+    {"boolean?", PP({ return check_(args, value_t::BOOLEAN); })},
+    {"string?", PP({ return check_(args, value_t::STRING); })},
+    {"pair?", PP({ return check_(args, value_t::PAIR); })},
+    {"not", PP({
+         expect(1, args);
+         return st_getbool(!is_true(car(args)));
+     })},
     {"set-car!", set_car_},
     {"set-cdr!", set_cdr_},
-    {"null?", PP(expect(1, args); return st_getbool(car(args) == nullptr);)}};
+    {"null?", PP({
+         expect(1, args);
+         return st_getbool(car(args) == nullptr);
+     })},
+    {"apply", PP({
+         expect(2, args);
+         return apply(ref(args, 0), ref(args, 1));
+     })}};
 
 static valp_t make_pp(int idx) {
     return make_list({st_getval(BASE::PRIM), make((double)idx)});

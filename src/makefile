@@ -1,7 +1,7 @@
 OBJS = main.o env.o eval-assign.o eval-begin.o eval-comb.o eval-define.o eval-if.o eval-lambda.o eval.o parse.o \
 primitive.o running.o scan.o symbol.o util.o value.o error.o
 
-CXXFLAGS = -Wall -O2 -std=c++1z
+CXXFLAGS = -Wall -O2 -g -std=c++1z
 
 a: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o ../$@ $^

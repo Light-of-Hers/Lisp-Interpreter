@@ -24,8 +24,7 @@ std::istream &read(std::istream &is, std::string &code) {
         } else if (ch == ')') {
             rb++;
         } else if (ch == '\n') {
-            if (lb == rb)
-                break;
+            if (lb == rb) break;
         }
     }
     return is;
@@ -35,6 +34,7 @@ env_t setup_env() {
     st_init();
     env_t global = extend_env(nullptr, nullptr, nullptr);
     pp_init(global);
+    load_file(global, "libs/libbasic");
     return global;
 }
 
