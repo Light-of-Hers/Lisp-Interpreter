@@ -1,5 +1,4 @@
-# Lisp-Interpreter
-A Simple Lisp Interpreter
+# Simple-Scheme-Evaluator
 
 **Compile:**
 ```
