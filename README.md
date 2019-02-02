@@ -1,7 +1,11 @@
 # Lisp-Interpreter
 A Simple Lisp Interpreter
 
-**Usage:**
+**Compile:**
 ```
 make
+```
+**Run:**
+```
+./a
 ```
